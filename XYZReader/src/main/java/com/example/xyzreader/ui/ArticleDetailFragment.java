@@ -2,7 +2,6 @@ package com.example.xyzreader.ui;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -22,9 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.util.XyzDateUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -33,9 +31,9 @@ import java.util.GregorianCalendar;
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
  * tablets) or a {@link ArticleDetailActivity} on handsets.
  */
-public class ArticleDetailFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ArticleDetailFragment";
+public class ArticleDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final String TAG = ArticleDetailFragment.class.getSimpleName();
 
     public static final String ARG_ITEM_ID = "item_id";
 
@@ -46,12 +44,6 @@ public class ArticleDetailFragment extends Fragment implements
     private CoordinatorLayout mCoordinatorLayout;
 
     private ImageView mPhotoView;
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
-    // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
-    // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -119,14 +111,8 @@ public class ArticleDetailFragment extends Fragment implements
     }
 
     private Date parsePublishedDate() {
-        try {
-            String date = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
-            return dateFormat.parse(date);
-        } catch (ParseException ex) {
-            Log.e(TAG, ex.getMessage());
-            Log.i(TAG, "passing today's date");
-            return new Date();
-        }
+        String dateStr = mCursor.getString(ArticleLoader.Query.PUBLISHED_DATE);
+        return XyzDateUtils.parseDate(dateStr);
     }
 
     private void bindViews() {
@@ -139,16 +125,13 @@ public class ArticleDetailFragment extends Fragment implements
         //bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
-
-        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
-
         if (mCursor != null) {
             mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
             //titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
-            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
+            if (!XyzDateUtils.isBeforeStartOfEpoch(publishedDate)) {
                 /*bylineView.setText(Html.fromHtml(
                         DateUtils.getRelativeTimeSpanString(
                                 publishedDate.getTime(),
