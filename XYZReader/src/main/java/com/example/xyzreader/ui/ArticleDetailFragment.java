@@ -98,18 +98,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
 
-        Toolbar toolbar = (Toolbar) mRootView.findViewById(R.id.toolbar);
-        getActivityCast().setSupportActionBar(toolbar);
-        getActivityCast().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getActivityCast().getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivityCast().onBackPressed();
-            }
-        });
-
         return mRootView;
     }
 
@@ -127,8 +115,12 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         //TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         //bylineView.setMovementMethod(new LinkMovementMethod());
 
+        String title = null;
+
         if (mCursor != null) {
             //titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            title = mCursor.getString(ArticleLoader.Query.TITLE);
+
             Date publishedDate = parsePublishedDate();
             if (!XyzDateUtils.isBeforeStartOfEpoch(publishedDate)) {
                 /*bylineView.setText(Html.fromHtml(
@@ -174,6 +166,23 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             //titleView.setText("N/A");
             //bylineView.setText("N/A" );
         }
+
+        Toolbar toolbar = (Toolbar) mRootView.findViewById(R.id.toolbar);
+
+        if(title != null){
+            toolbar.setTitle(title);
+        }
+
+        getActivityCast().setSupportActionBar(toolbar);
+        getActivityCast().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActivityCast().getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivityCast().onBackPressed();
+            }
+        });
     }
 
     private void loadBodyText(){

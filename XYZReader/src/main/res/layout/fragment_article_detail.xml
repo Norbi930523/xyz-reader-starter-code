@@ -38,7 +38,6 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_medium"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
@@ -49,6 +48,8 @@
             android:textColor="@android:color/black"
             android:textColorLink="@color/colorAccent"
             android:textSize="@dimen/detail_body_text_size"
+            android:padding="@dimen/spacing_medium"
+            android:text="@string/loading"
             android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier" />
 
     </android.support.v4.widget.NestedScrollView>
