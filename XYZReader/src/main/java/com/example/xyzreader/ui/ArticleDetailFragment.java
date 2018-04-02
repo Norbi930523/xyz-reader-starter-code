@@ -47,7 +47,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     private long mItemId;
     private View mRootView;
     private int mMutedColor = 0xFF333333;
-    private CoordinatorLayout mCoordinatorLayout;
 
     private ImageView mPhotoView;
 
@@ -96,7 +95,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        mCoordinatorLayout = (CoordinatorLayout) mRootView.findViewById(R.id.coordinator_layout);
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
 
