@@ -54,6 +54,7 @@
             style="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/black"
             android:textColorLink="@color/colorAccent"
+            android:autoLink="web"
             android:textSize="@dimen/detail_body_text_size"
             android:padding="@dimen/spacing_medium"
             android:text="@string/loading"
