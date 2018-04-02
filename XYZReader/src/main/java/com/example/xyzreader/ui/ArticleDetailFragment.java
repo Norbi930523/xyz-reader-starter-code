@@ -2,7 +2,10 @@ package com.example.xyzreader.ui;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -10,6 +13,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,7 +110,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-        bindViews();
         return mRootView;
     }
 
@@ -123,12 +126,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         //TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
         //TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         //bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
         if (mCursor != null) {
-            mRootView.setAlpha(0);
-            mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
             //titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
             if (!XyzDateUtils.isBeforeStartOfEpoch(publishedDate)) {
@@ -149,7 +148,9 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
                                 + "</font>"));*/
 
             }
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+
+            loadBodyText();
+
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
                         @Override
@@ -172,8 +173,27 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             //mRootView.setVisibility(View.GONE);
             //titleView.setText("N/A");
             //bylineView.setText("N/A" );
-            bodyView.setText("N/A");
         }
+    }
+
+    private void loadBodyText(){
+        final TextView bodyView = mRootView.findViewById(R.id.article_body);
+
+        Runnable bodyLoader = new Runnable() {
+            @Override
+            public void run() {
+                final Spanned bodyText = Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />"));
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bodyView.setText(bodyText);
+                    }
+                });
+            }
+        };
+
+        AsyncTask.execute(bodyLoader);
     }
 
     @Override
