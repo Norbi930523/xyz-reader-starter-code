@@ -25,6 +25,7 @@
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"/>
 
+            <!-- Scrim, based on https://stackoverflow.com/a/31529836 -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
