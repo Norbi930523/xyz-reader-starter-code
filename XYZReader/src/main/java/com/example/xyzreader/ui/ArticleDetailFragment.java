@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -197,6 +199,16 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
                     @Override
                     public void run() {
                         bodyView.setText(bodyText);
+
+                        mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+                                        .setType("text/plain")
+                                        .setText(bodyText)
+                                        .getIntent(), getString(R.string.action_share)));
+                            }
+                        });
                     }
                 });
             }
